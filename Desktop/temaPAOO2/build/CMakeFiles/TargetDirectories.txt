@@ -1,0 +1,3 @@
+/home/andreea/Desktop/temaPAOO2/build/CMakeFiles/temaPAOO2.dir
+/home/andreea/Desktop/temaPAOO2/build/CMakeFiles/edit_cache.dir
+/home/andreea/Desktop/temaPAOO2/build/CMakeFiles/rebuild_cache.dir

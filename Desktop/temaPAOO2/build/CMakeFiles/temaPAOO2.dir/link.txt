@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/temaPAOO2.dir/src/main.cpp.o CMakeFiles/temaPAOO2.dir/src/Shelf.cpp.o -o temaPAOO2 
