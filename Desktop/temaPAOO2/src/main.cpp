@@ -2,22 +2,22 @@
 #include "Shelf.h"
 
 int main() {
-    // Creăm primul obiect Shelf
-    std::cout << "Creăm shelf1:\n";
-    Shelf shelf1(10, 3); // raftul conține 3 produse, fiecare având cantitatea 10
+    std::cout << "Instanțierea unui obiect de tip Shelf:\n";
+    Shelf shelf1(10, 3);
     shelf1.print();
 
-    // Creăm al doilea obiect Shelf
-    std::cout << "\nCreăm shelf2:\n";
-    Shelf shelf2(5, 3); // raftul conține 3 produse, fiecare având cantitatea 5
+    std::cout << "\nInstanțierea unui obiect de tip AdvancedShelf:\n";
+    AdvancedShelf shelf2(5, 4, "Raft special");
     shelf2.print();
 
-    // Testăm supraincarcarea operatorului de atribuire
-    std::cout << "\nAtribuim shelf1 lui shelf2:\n";
-    shelf2 = shelf1; // operator=
-    shelf2.print();
+    std::cout << "\nUtilizarea unui pointer de tip Shelf pentru un AdvancedShelf:\n";
+    Shelf* ptr = new AdvancedShelf(7, 2, "Raft dinamic");
+    ptr->print();
 
-    std::cout << "\nSfârșitul programului - se apelează destructori pentru shelf1 și shelf2.\n";
+    std::cout << "\nEliberarea memoriei alocate dinamic:\n";
+    delete ptr;
+
+    std::cout << "\nSfârșitul programului.\n";
     return 0;
 }
 
