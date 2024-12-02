@@ -1,117 +1,80 @@
 #include "Shelf.h"
 
-// Constructor clasa de baza - inițializează variabilele din listă de inițializare
-Shelf::Shelf(int productCount, int quantity) : quantity(quantity) {
-	if (quantity <= 0) {
-    	throw std::invalid_argument("Cantitatea trebuie sa fie mai mare decat 0.\n");
-    	}
-	
-    products = new int[quantity];
+// Constructor
+Shelf::Shelf(int productCount, int quantity) : products(std::make_unique<int[]>(quantity)), quantity(quantity) {
+    if (quantity <= 0) {
+        throw std::invalid_argument("Cantitatea trebuie sa fie mai mare decat 0.\n");
+    }
     for (int i = 0; i < quantity; ++i) {
         products[i] = productCount;
     }
     std::cout << "Constructor: Raft creat cu " << quantity << " produse, fiecare având cantitatea " << productCount << ".\n";
-    std::cout << "Memoria a fost alocată la adresa: " << products << "\n";
 }
 
-// Destructor clasei de baza - eliberăm memoria alocată pe heap
+// Destructor
 Shelf::~Shelf() {
-    std::cout << "Destructor: Eliberăm memoria pentru raftul de produse la adresa: " << products << "\n";
-    delete[] products;
-    std::cout << "Memoria a fost eliberată.\n";
+    std::cout << "Destructor: Resurse eliberate automat.\n";
 }
 
-/*
-// Supraincarcare operator `=` pentru atribuirea unui raft la altul
-Shelf& Shelf::operator=(const Shelf& other) {
-    if (this == &other) return *this; // verificare auto-atribuire
-
-    // Eliberăm memoria alocată anterior
-    std::cout << "Operator = : Eliberăm memoria existentă pentru a atribui un nou raft.\n";
-    delete[] products;
-
-    // Alocăm din nou memorie și copiem valorile
+// Move constructor
+Shelf::Shelf(Shelf&& other) noexcept {
+    std::lock_guard<std::mutex> lock(other.mtx);
+    products = std::move(other.products);
     quantity = other.quantity;
-    products = new int[other.quantity];
-    for (int i = 0; i < other.quantity; ++i) {
-        products[i] = other.products[i];
-    }
-    std::cout << "Operator = : Memoria nouă a fost alocată la adresa: " << products << "\n";
-    return *this;
-}
-*/
-
-//Copy constructor
-/*
-Shelf::Shelf(const Shelf& other) : quantity(other.quantity) {
-    products = new int[quantity];
-    for (int i = 0; i < quantity; ++i) {
-        products[i] = other.products[i];
-    }
-    std::cout << "Copy Constructor: Raft copiat. Memoria alocată la adresa: " << products << "\n";
-}
-*/
-
-
-//Move constructor
-Shelf::Shelf(Shelf&& other) noexcept : products(other.products), quantity(other.quantity) {
-    other.products = nullptr;
     other.quantity = 0;
-    std::cout << "Move Constructor: Resurse mutate. Memoria a fost transferată la adresa: " << products << "\n";
+    std::cout << "Move Constructor: Resurse mutate.\n";
 }
-
 
 // Move assignment operator
 Shelf& Shelf::operator=(Shelf&& other) noexcept {
     if (this != &other) {
-       delete[] products;  // Eliberăm resursele curente
-        
-        // Mutăm resursele
-        products = other.products;
+        std::lock_guard<std::mutex> lock(other.mtx);
+        products = std::move(other.products);
         quantity = other.quantity;
-
-        // Resetăm obiectul sursă
-        other.products = nullptr;
         other.quantity = 0;
-
-        std::cout << "Move Constructor: Resurse mutate. Memoria a fost transferată la adresa: " << products << "\n";
+        std::cout << "Move Assignment Operator: Resurse mutate.\n";
     }
     return *this;
 }
 
-
+// Getter
 int Shelf::getProduct(int index) const {
+    std::lock_guard<std::mutex> lock(mtx);
+    if (index < 0 || index >= quantity) {
+        throw std::out_of_range("Index invalid.\n");
+    }
     return products[index];
 }
 
+// Setter
 void Shelf::setProduct(int index, int count) {
+    std::lock_guard<std::mutex> lock(mtx);
     if (index >= 0 && index < quantity) {
         products[index] = count;
     }
 }
 
+// Print
 void Shelf::print() const {
+    std::lock_guard<std::mutex> lock(mtx);
     std::cout << "Produsele de pe raft: ";
     for (int i = 0; i < quantity; ++i) {
         std::cout << products[i] << " ";
     }
-    std::cout << std::endl;
+    std::cout << "\n";
 }
 
-// Constructorul clasei derivate
+// AdvancedShelf
 AdvancedShelf::AdvancedShelf(int productCount, int quantity, const std::string& label)
     : Shelf(productCount, quantity), label(label) {
     std::cout << "Constructor: Raft avansat creat cu eticheta \"" << label << "\".\n";
 }
 
-// Destructorul clasei derivate
 AdvancedShelf::~AdvancedShelf() {
     std::cout << "Destructor: Raft avansat cu eticheta \"" << label << "\" distrus.\n";
 }
 
-// Suprascriere funcție print
 void AdvancedShelf::print() const {
     Shelf::print();
     std::cout << "Eticheta raftului: " << label << "\n";
 }
-
