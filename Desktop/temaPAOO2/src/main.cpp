@@ -33,12 +33,11 @@ int main() {
     t1.join();
     t2.join();
 
-    std::cout << "\nUtilizarea unui pointer de tip Shelf pentru un AdvancedShelf:\n";
-    Shelf* ptr = new AdvancedShelf(7, 2, "Raft dinamic");
-    ptr->print();
-
-    std::cout << "\nEliberarea memoriei alocate dinamic:\n";
-    delete ptr;
+    std::cout << "\nUtilizarea unui SharedShelf:\n";
+    SharedShelf shared1("Resursa Partajată 1");
+    SharedShelf shared2 = shared1; // Partajare resursă între obiecte
+    shared1.useResource();
+    shared2.useResource();
 
     std::cout << "\nSfârșitul programului.\n";
     return 0;

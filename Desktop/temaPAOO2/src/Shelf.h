@@ -15,12 +15,10 @@ private:
 public:
     explicit Shelf(int productCount, int quantity);
 
-    // Dezactivare funcții generate de compilator pe care nu le dorim
     Shelf() = delete;
     Shelf(const Shelf& other) = delete;
     Shelf& operator=(const Shelf& other) = delete;
 
-    // Copy constructor și operator de mutare
     Shelf(Shelf&& other) noexcept;
     Shelf& operator=(Shelf&& other) noexcept;
 
@@ -42,6 +40,16 @@ public:
     ~AdvancedShelf() override;
 
     void print() const override;
+};
+
+// Clasa SharedShelf pentru resurse partajate
+class SharedShelf {
+private:
+    std::shared_ptr<std::string> sharedResource; // Resursă partajată
+
+public:
+    explicit SharedShelf(const std::string& resource);
+    void useResource() const;
 };
 
 #endif
